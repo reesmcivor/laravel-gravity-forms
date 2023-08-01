@@ -1,0 +1,34 @@
+{
+    "name": "reesmcivor/gravity-forms",
+    "description": "Laravel gravity forms",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rees McIvor",
+            "email": "reesmcivor@hotmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^9.0",
+    },
+    "autoload": {
+        "psr-4": {
+            "ReesMcIvor\\GravityForms\\": "src/",
+            "ReesMcIvor\\GravityForms\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ReesMcIvor\\GravityForms\\GravityFormsPackageServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
