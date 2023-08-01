@@ -1,5 +1,5 @@
 {
-    "name": "reesmcivor/gravity-forms",
+    "name": "reesmcivor/laravel-gravity-forms",
     "description": "Laravel gravity forms",
     "type": "library",
     "license": "MIT",
