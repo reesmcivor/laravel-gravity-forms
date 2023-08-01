@@ -1,6 +1,6 @@
 <?php
 
-namespace ReesMcIvor\GravtyForms;
+namespace ReesMcIvor\GravityForms;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
