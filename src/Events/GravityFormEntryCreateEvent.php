@@ -9,28 +9,16 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use ReesMcIvor\GravityForms\Models\GravityFormEntry;
 
 class GravityFormEntryCreateEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
-    public function __construct()
-    {
-        dd('got here');
-    }
+    public GravityFormEntry $gravityFormEntry;
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
+    public function __construct( $gravityFormEntry )
     {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
+        $this->gravityFormEntry = $gravityFormEntry;
     }
 }

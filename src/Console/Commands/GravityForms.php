@@ -49,6 +49,7 @@ class GravityForms extends Command
             if(!$formEntries['entries']) break;
 
             foreach ($formEntries['entries'] as $formEntry) {
+
                 $gravityFormEntry = GravityFormEntry::updateOrCreate(['id' => $formEntry['id']], [
                     'id' => $formEntry['id'],
                     'gravity_form_id' => $formEntry['form_id'],
@@ -58,8 +59,10 @@ class GravityForms extends Command
                     'updated_at' => $formEntry['date_updated']
                 ]);
 
-                event(new \ReesMcIvor\GravityForms\Events\GravityFormEntryCreated($gravityFormEntry));
-                
+                if($gravityFormEntry->wasRecentlyCreated) {
+                    event(new \ReesMcIvor\GravityForms\Events\GravityFormEntryCreateEvent($gravityFormEntry));
+                }
+
             }
 
             $page++;
