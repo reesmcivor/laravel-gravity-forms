@@ -12,11 +12,17 @@ class GravityFormsPackageServiceProvider extends ServiceProvider
     public function boot()
     {
         if($this->app->runningInConsole()) {
+            $migrationPath = function_exists('tenancy') ? 'migrations/tenant' : 'migrations';
             $this->publishes([
+                __DIR__ . '/../database/migrations/tenant' => database_path($migrationPath),
                 __DIR__ . '/../publish/tests' => base_path('tests/GravityForms'),
                 __DIR__ . '/../publish/config' => base_path('config'),
             ], 'reesmcivor-gravity-forms');
         }
+
+        $this->commands([
+            \ReesMcIvor\GravityForms\Console\Commands\GravityForms::class,
+        ]);
     }
 
     private function modulePath($path)
