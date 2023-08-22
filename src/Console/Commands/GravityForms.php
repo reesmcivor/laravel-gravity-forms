@@ -14,7 +14,7 @@ class GravityForms extends Command
 
     protected $description = 'Import Gravity Forms';
 
-    protected function syncForms()
+    protected function syncGravityForms()
     {
         $forms = $this->getClient()->get('forms', ["paging" => ["page_size" => 50]]);
         if(!$forms->successful()) throw new \Exception("Unable to get gravity forms");
