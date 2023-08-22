@@ -31,8 +31,8 @@ class GravityFormEntry extends Model
         return GravityFormFactory::new();
     }
 
-    public function entries()
+    public function form()
     {
-        return $this->hasMany(GravityFormEntry::class);
+        return $this->belongsTo(GravityForm::class, 'gravity_form_id');
     }
 }

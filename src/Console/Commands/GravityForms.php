@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use ReesMcIvor\GravityForms\Models\GravityForm;
 use ReesMcIvor\GravityForms\Models\GravityFormEntry;
+use Tightenco\Collect\Support\Collection;
 
 class GravityForms extends Command
 {
@@ -13,7 +14,7 @@ class GravityForms extends Command
 
     protected $description = 'Import Gravity Forms';
 
-    public function handle()
+    protected function syncForms()
     {
         $forms = $this->getClient()->get('forms', ["paging" => ["page_size" => 50]]);
         if(!$forms->successful()) throw new \Exception("Unable to get gravity forms");
@@ -29,6 +30,12 @@ class GravityForms extends Command
                 'fields' => $formFields['fields']
             ]);
         }
+    }
+
+    public function handle()
+    {
+
+        $gravityFormEntries = new \Illuminate\Support\Collection();
 
         $page = 1;
         do {
@@ -50,7 +57,14 @@ class GravityForms extends Command
 
             foreach ($formEntries['entries'] as $formEntry) {
 
-                $gravityFormEntry = GravityFormEntry::updateOrCreate(['id' => $formEntry['id']], [
+                $gravityForm = GravityForm::find( $formEntry['form_id'] );
+                if(!$gravityForm) {
+                    $this->syncGravityForms();
+                }
+
+
+                $gravityFormEntry = GravityFormEntry::firstOrNew(['id' => $formEntry['id']]);
+                $gravityFormEntry->fill([
                     'id' => $formEntry['id'],
                     'gravity_form_id' => $formEntry['form_id'],
                     'entry' => $formEntry,
@@ -59,15 +73,23 @@ class GravityForms extends Command
                     'updated_at' => $formEntry['date_updated']
                 ]);
 
-                if($gravityFormEntry->wasRecentlyCreated) {
+                if($gravityFormEntry->isDirty()) {
+                    $gravityFormEntries->add($gravityFormEntry);
                     event(new \ReesMcIvor\GravityForms\Events\GravityFormEntryCreateEvent($gravityFormEntry));
                 }
+
+                $gravityFormEntry->save();
 
             }
 
             $page++;
 
         } while(true);
+
+        if($gravityFormEntries->count()) {
+            event(new \ReesMcIvor\GravityForms\Events\GravityFormsEntriesEvent($gravityFormEntries));
+        }
+
 
 
     }
