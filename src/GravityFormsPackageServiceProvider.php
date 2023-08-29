@@ -20,6 +20,8 @@ class GravityFormsPackageServiceProvider extends ServiceProvider
             ], 'reesmcivor-gravity-forms');
         }
 
+        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
+
         $this->commands([
             \ReesMcIvor\GravityForms\Console\Commands\GravityForms::class,
         ]);
