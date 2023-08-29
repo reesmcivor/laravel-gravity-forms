@@ -10,7 +10,7 @@ use Tightenco\Collect\Support\Collection;
 
 class GravityForms extends Command
 {
-    protected $signature = 'gravity-forms';
+    protected $signature = 'gravity-forms {--from= : The from date of the entries to sync}';
 
     protected $description = 'Import Gravity Forms';
 
@@ -35,6 +35,7 @@ class GravityForms extends Command
     public function handle()
     {
 
+        $dateFrom = $this->option('from') ? \Carbon\Carbon::parse($this->option('from')) : now()->subDays(7);
         $gravityFormEntries = new \Illuminate\Support\Collection();
 
         $page = 1;
@@ -62,7 +63,7 @@ class GravityForms extends Command
                     $this->syncGravityForms();
                 }
 
-
+                $dateCreatedCarbon = \Carbon\Carbon::parse($formEntry['date_created']);
                 $gravityFormEntry = GravityFormEntry::firstOrNew(['id' => $formEntry['id']]);
                 $gravityFormEntry->fill([
                     'id' => $formEntry['id'],
@@ -73,7 +74,7 @@ class GravityForms extends Command
                     'updated_at' => $formEntry['date_updated']
                 ]);
 
-                if($gravityFormEntry->isDirty()) {
+                if($gravityFormEntry->isDirty() || $dateFrom->lessThanOrEqualTo($dateCreatedCarbon)) {
                     $gravityFormEntries->add($gravityFormEntry);
                     event(new \ReesMcIvor\GravityForms\Events\GravityFormEntryCreateEvent($gravityFormEntry));
                 }

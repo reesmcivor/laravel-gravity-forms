@@ -26,6 +26,8 @@ class GravityFormEntry extends Model
         'updated_at'
     ];
 
+    protected $appends = array('age');
+
     protected static function newFactory()
     {
         return GravityFormFactory::new();
@@ -35,4 +37,10 @@ class GravityFormEntry extends Model
     {
         return $this->belongsTo(GravityForm::class, 'gravity_form_id');
     }
+    
+    public function getAgeAttribute()
+    {
+        return $this->created_at->diffForHumans();
+    }
+    
 }
