@@ -74,7 +74,7 @@ class GravityForms extends Command
                     'updated_at' => $formEntry['date_updated']
                 ]);
 
-                if($gravityFormEntry->isDirty() || $dateFrom->lessThanOrEqualTo($dateCreatedCarbon)) {
+                if($dateFrom->lessThanOrEqualTo($dateCreatedCarbon)) {
                     $gravityFormEntries->add($gravityFormEntry);
                     event(new \ReesMcIvor\GravityForms\Events\GravityFormEntryCreateEvent($gravityFormEntry));
                 }
