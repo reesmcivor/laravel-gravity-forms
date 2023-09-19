@@ -69,11 +69,11 @@ class GravityForms extends Command
                     'id' => $formEntry['id'],
                     'gravity_form_id' => $formEntry['form_id'],
                     'entry' => $formEntry,
-                    'fields' => $this->formatEntry($formEntry),
+                    'fields' => $this->mapping($this->formatEntry($formEntry)),
                     'created_at' => $formEntry['date_created'],
                     'updated_at' => $formEntry['date_updated']
                 ]);
-
+                
                 if($dateFrom->lessThanOrEqualTo($dateCreatedCarbon)) {
                     $gravityFormEntries->add($gravityFormEntry);
                     event(new \ReesMcIvor\GravityForms\Events\GravityFormEntryCreateEvent($gravityFormEntry));
@@ -91,8 +91,22 @@ class GravityForms extends Command
             event(new \ReesMcIvor\GravityForms\Events\GravityFormsEntriesEvent($gravityFormEntries));
         }
 
+    }
 
-
+    function mapping( $formEntry ) : array
+    {
+        $mappings = [
+            "Street Address" => "Address Line 1",
+            "State / Province" => "Region",
+            "ZIP / Postal Code" => "Postal Code",
+        ];
+        foreach($mappings as $old => $new) {
+            if(isset($formEntry[$old])) {
+                $formEntry[$new] = $formEntry[$old];
+                unset($formEntry[$old]);
+            }
+        }
+        return $formEntry;
     }
 
     function formatEntry($formEntry)
@@ -111,7 +125,7 @@ class GravityForms extends Command
         $result = [];
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $result = array_merge($result, $this->flattenArrayWithKeys($value, $prefix . $key . '_'));
+                $result = array_merge($result, $this->flattenArrayWithKeys($value));
             } else {
                 $result[$prefix . $key] = $value;
             }
