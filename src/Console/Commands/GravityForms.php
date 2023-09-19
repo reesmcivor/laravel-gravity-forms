@@ -3,6 +3,7 @@
 namespace ReesMcIvor\GravityForms\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use ReesMcIvor\GravityForms\Models\GravityForm;
 use ReesMcIvor\GravityForms\Models\GravityFormEntry;
@@ -80,7 +81,6 @@ class GravityForms extends Command
                 }
 
                 $gravityFormEntry->save();
-
             }
 
             $page++;
@@ -113,6 +113,7 @@ class GravityForms extends Command
     {
         $entryFormatted = [];
         $labels = $this->flattenArrayWithKeys($formEntry['_labels']);
+        $labels = $this->flattenArrayWithKeys($formEntry['_labels']);
         foreach ($labels as $id => $label) {
             $entryFormatted[$label] = isset($formEntry[$id]) ? $formEntry[$id] : '';
         }
@@ -120,18 +121,19 @@ class GravityForms extends Command
         return $entryFormatted;
     }
 
-    function flattenArrayWithKeys($array, $prefix = '') : array
+    function flattenArrayWithKeys($array) : array
     {
         $result = [];
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $result = array_merge($result, $this->flattenArrayWithKeys($value));
+                $result += $this->flattenArrayWithKeys($value);
             } else {
-                $result[$prefix . $key] = $value;
+                $result[$key] = $value;
             }
         }
         return $result;
     }
+
 
     protected function getClient()
     {
