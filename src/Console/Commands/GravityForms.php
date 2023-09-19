@@ -73,7 +73,7 @@ class GravityForms extends Command
                     'created_at' => $formEntry['date_created'],
                     'updated_at' => $formEntry['date_updated']
                 ]);
-                
+
                 if($dateFrom->lessThanOrEqualTo($dateCreatedCarbon)) {
                     $gravityFormEntries->add($gravityFormEntry);
                     event(new \ReesMcIvor\GravityForms\Events\GravityFormEntryCreateEvent($gravityFormEntry));
@@ -98,7 +98,7 @@ class GravityForms extends Command
         $mappings = [
             "Street Address" => "Address Line 1",
             "State / Province" => "Region",
-            "ZIP / Postal Code" => "Postal Code",
+            "ZIP / Postal Code" => "Postcode",
         ];
         foreach($mappings as $old => $new) {
             if(isset($formEntry[$old])) {
