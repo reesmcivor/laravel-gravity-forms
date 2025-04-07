@@ -2,18 +2,13 @@
 
 namespace ReesMcIvor\GravityForms\Console\Commands;
 
-use App\Http\Traits\SmartsheetOperations;
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use ReesMcIvor\GravityForms\Models\GravityForm;
 use ReesMcIvor\GravityForms\Models\GravityFormEntry;
-use Tightenco\Collect\Support\Collection;
 
 class GravityForms extends Command
 {
-
-    use SmartsheetOperations;
 
     protected $signature = 'gravity-forms {--from= : The from date of the entries to sync}';
 
@@ -61,9 +56,6 @@ class GravityForms extends Command
 
             if(!$formEntries['entries']) break;
 
-            // External IDs
-            $enquiries = $this->getSmartsheet('enquiries');
-
             foreach ($formEntries['entries'] as $formEntry) {
 
                 $gravityForm = GravityForm::find( $formEntry['form_id'] );
@@ -71,7 +63,6 @@ class GravityForms extends Command
                     $this->syncGravityForms();
                 }
 
-                $dateCreatedCarbon = \Carbon\Carbon::parse($formEntry['date_created']);
                 $gravityFormEntry = GravityFormEntry::firstOrNew(['id' => $formEntry['id']]);
                 $gravityFormEntry->fill([
                     'id' => $formEntry['id'],
@@ -84,6 +75,7 @@ class GravityForms extends Command
 
 
                 // Dont sync enquries that already are on the sheet
+                /*
                 if(!$gravityFormEntry->external_id) {
                     foreach($enquiries as $enquiry) {
                         $webId = $enquiry['web-id']['value'];
@@ -93,7 +85,7 @@ class GravityForms extends Command
                             break;
                         }
                     }
-                }
+                }*/
 
                 if(!$gravityFormEntry->external_id) {
                     $gravityFormEntries->add($gravityFormEntry);

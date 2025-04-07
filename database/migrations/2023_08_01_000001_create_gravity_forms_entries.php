@@ -11,8 +11,10 @@ return new class extends Migration
         Schema::create('gravity_form_entries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('gravity_form_id')->constrained('gravity_forms');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->json('entry')->nullable();
+            $table->json('fields')->nullable();
+            $table->string('external_id')->nullable();
             $table->timestamps();
         });
     }
